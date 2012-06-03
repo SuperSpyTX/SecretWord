@@ -11,4 +11,5 @@ public class Settings {
 	public static String logPrefix = "[SecretWord] ";
 	public static String prefix = "[" + ChatColor.GOLD + "SecretWord" + ChatColor.WHITE + "] ";
 	public static int minwordlength = 9;
+	public static int maxloginattempts = 3;
 }

@@ -15,6 +15,7 @@ public class SecretPlayer {
 	private Player bukkitplayer = null;
 	private boolean loggedIn = false;
 	private boolean registered = false;
+	private int loginattempts = 0;
 	private Location initialLocation = null;
 	
 	public SecretPlayer(Core instance, String mcuser, String ip) {
@@ -32,6 +33,16 @@ public class SecretPlayer {
 	
 	public void setRegistered(boolean e) {
 		registered = e;
+	}
+	
+	public boolean triggerAttempt() {
+		loginattempts++;
+		
+		if(loginattempts > Settings.maxloginattempts) {
+			bukkitplayer.kickPlayer(Settings.logPrefix + "Too many login attempts!");
+			return true;
+		}
+		return false;
 	}
 	
 	public void setBukkitPlayer(Player e) {
