@@ -1,0 +1,10 @@
+name: SecretWord
+main: me.freebuild.superspytx.secretword.Core
+version: 0.0.1
+description: Prevents ForceOP and any other MITM attacks in Minecraft.
+softdepend: [AntiCheat]
+commands:
+   secretword:
+    description: Usable SecretWord Commands
+    usage: |
+      /<command> help - Help menu for SecretWord
