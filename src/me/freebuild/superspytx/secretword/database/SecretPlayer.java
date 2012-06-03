@@ -4,6 +4,7 @@ import me.freebuild.superspytx.secretword.Core;
 import me.freebuild.superspytx.secretword.settings.Settings;
 
 import org.bukkit.ChatColor;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
@@ -15,6 +16,7 @@ public class SecretPlayer {
 	private Player bukkitplayer = null;
 	private boolean loggedIn = false;
 	private boolean registered = false;
+	private boolean hasCreativeMode = false;
 	private int loginattempts = 0;
 	private Location initialLocation = null;
 	
@@ -28,6 +30,17 @@ public class SecretPlayer {
 		loggedIn = e;
 		if(loggedIn) {
 			bukkitplayer.sendMessage(Settings.prefix + ChatColor.GREEN + "You've successfully logged in! Enjoy!");
+		}
+		
+		if(hasCreativeMode) {
+			bukkitplayer.setGameMode(GameMode.CREATIVE);
+		}
+	}
+	
+	public void setHasCreative(boolean e) {
+		hasCreativeMode = e;
+		if(hasCreativeMode) {
+			bukkitplayer.setGameMode(GameMode.SURVIVAL);
 		}
 	}
 	

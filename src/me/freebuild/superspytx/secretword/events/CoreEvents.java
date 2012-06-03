@@ -1,19 +1,16 @@
 package me.freebuild.superspytx.secretword.events;
 
-import java.util.logging.Level;
-
 import me.freebuild.superspytx.secretword.Core;
 import me.freebuild.superspytx.secretword.database.SecretPlayer;
 import me.freebuild.superspytx.secretword.settings.Settings;
 import org.bukkit.ChatColor;
+import org.bukkit.GameMode;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerChatEvent;
-import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
-import org.bukkit.event.player.PlayerMoveEvent;
 
 public class CoreEvents implements Listener {
 
@@ -29,6 +26,7 @@ public class CoreEvents implements Listener {
 				.getAddress().toString().split(":")[0].replace("/", ""));
 		core.getDB().secplayers.put(player.getName(), player);
 		player.setBukkitPlayer(e.getPlayer());
+		
 		// check registered
 		player.setRegistered(core.getDB().userExists(player.getName()));
 
@@ -93,7 +91,12 @@ public class CoreEvents implements Listener {
 		if (core.getDB().secplayers.containsKey(e.getPlayer().getName())) {
 			SecretPlayer player = core.getDB().secplayers.get(e.getPlayer()
 					.getName());
+			player.setInitialLocation(e.getPlayer().getLocation());
 			if (!player.isLoggedIn()) {
+				
+				//check creative mode/strip it if necessary.
+				player.setHasCreative(e.getPlayer().getGameMode().equals(GameMode.CREATIVE));
+				
 				// now lets check if registered or just stupid.
 				if (!player.isRegistered()) {
 					player.getPlayer()
@@ -109,28 +112,6 @@ public class CoreEvents implements Listener {
 											+ "Please enter your assigned secret word.");
 				}
 			}
-		}
-	}
-
-	@EventHandler(priority = EventPriority.LOWEST)
-	public void move(PlayerMoveEvent e) {
-		if (core.getDB().secplayers.containsKey(e.getPlayer().getName())) {
-			// if all goes well.
-			SecretPlayer player = core.getDB().secplayers.get(e.getPlayer()
-					.getName());
-			player.setBukkitPlayer(e.getPlayer());
-			player.setInitialLocation(e.getFrom());
-			if (!player.isLoggedIn()) {
-				player.teleportBack();
-			}
-		} else {
-			// otherwise something really went wrong. perhaps derp?
-			core.getLogger().log(
-					Level.WARNING,
-					"There's a serious problem, player "
-							+ e.getPlayer().getName()
-							+ " does not have a SecretPlayer record!");
-			return;
 		}
 	}
 

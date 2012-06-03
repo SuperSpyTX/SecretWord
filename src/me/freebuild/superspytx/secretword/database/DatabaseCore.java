@@ -66,11 +66,11 @@ public class DatabaseCore {
 				ps.setString(2 + 1, saltDb);
 				ps.setString(3 + 1, Long.toString(System.currentTimeMillis()));
 				ps.execute();
+				ps.close();
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-
 		}
 	}
 
@@ -105,8 +105,11 @@ public class DatabaseCore {
 				}
 
 				if (dIP.equalsIgnoreCase(ip)) {
+					ps.close();
 					return true;
 				}
+				
+				ps.close();
 
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
@@ -162,20 +165,24 @@ public class DatabaseCore {
 							dSalt);
 
 					if (Arrays.equals(proposedHash, dWord)) {
+						ps.close();
 						return true;
 					}
 
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
+					ps.close();
 					return false;
 				} catch (NoSuchAlgorithmException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
+					ps.close();
 					return false;
 				}
 
 			}
+			ps.close();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -199,8 +206,10 @@ public class DatabaseCore {
 			query = ps.getResultSet();
 			if (query != null)
 				if(query.next())
-					if (query.getString("mcuser") != null)
+					if (query.getString("mcuser") != null) {
+						ps.close();
 						return true;
+					}
 		} catch (SQLException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
