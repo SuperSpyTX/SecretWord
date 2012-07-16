@@ -3,13 +3,13 @@
   <modelVersion>4.0.0</modelVersion>
   
   
-  <groupId>me.freebuild.superspytx</groupId>
+  <groupId>me.freebuild.superspytx.sc</groupId>
   <artifactId>SecretWord</artifactId>
   <packaging>jar</packaging>
   <name>SecretWord</name>
-  <version>0.0.1-SNAPSHOT</version>
+  <version>1.0</version>
   <description>
-    Prevents your moderators and administrators from getting exploited by ForceOP programs.
+    Prevents your moderators and administrators from getting exploited by MITM attacks.
   </description>
  
   <properties>

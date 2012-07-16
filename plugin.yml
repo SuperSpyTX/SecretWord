@@ -1,10 +1,31 @@
-name: SecretWord
-main: me.freebuild.superspytx.secretword.Core
-version: 0.0.1
-description: Prevents ForceOP and any other MITM attacks in Minecraft.
-softdepend: [AntiCheat]
+name: ${project.artifactId}
+main: ${project.groupId}.${project.artifactId}
+version: ${project.version}
+description: ${project.description}
 commands:
    secretword:
     description: Usable SecretWord Commands
+    aliases: sw
     usage: |
       /<command> help - Help menu for SecretWord
+permission:
+   secretword.login:
+     default: false
+     description: Requires users with this permission to enter a secret word (enableByPermission is required).
+   secretword.halfhour:
+     default: false
+     description: Requires users with this permission to re-enter their secret word after half an hour (IP checks are still performed).
+   secretword.showjoin:
+     default: op
+     description: Users with this node will still broadcast their join messages.  Good for plugins meant to hide join messages for certain people.
+   secretword.admin.*:
+     default: op
+     children:
+       secretword.admin.reload: true
+       secretword.admin.reset: true
+   secretword.admin.reload:
+     default: op
+     description: Reload configuration for SecretWord.
+   secretword.admin.reset:
+     default: op
+     description: Reset a player's secret word data.
