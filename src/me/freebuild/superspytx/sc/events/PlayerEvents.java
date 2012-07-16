@@ -19,7 +19,7 @@ public class PlayerEvents implements Listener
         core = instance;
     }
 
-    @EventHandler(priority = EventPriority.MONITOR)
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void e(PlayerMoveEvent e)
     {
         if (core.getDB().secplayers.containsKey(e.getPlayer().getName()))
@@ -29,7 +29,9 @@ public class PlayerEvents implements Listener
             player.setBukkitPlayer(e.getPlayer());
             if (!player.isLoggedIn())
             {
-                player.teleportBack();
+                e.setTo(e.getFrom()); // this is so plugins recognize that it's "cancelled"
+                e.setCancelled(true); // backwards compatibility.
+                player.teleportBack(); // now teleport back!
             }
         }
         else
@@ -37,6 +39,27 @@ public class PlayerEvents implements Listener
             // otherwise something really went wrong. perhaps derp?
             //core.getLogger().log(Level.WARNING, "There's a serious problem, player " + e.getPlayer().getName() + " does not have a SecretPlayer record!");
             return;
+        }
+    }
+    
+    @EventHandler(priority = EventPriority.LOWEST)
+    public void e(PlayerTeleportEvent e)
+    {
+        if (core.getDB().secplayers.containsKey(e.getPlayer().getName()))
+        {
+            // if all goes well.
+            SecretPlayer player = core.getDB().secplayers.get(e.getPlayer().getName());
+            player.setBukkitPlayer(e.getPlayer());
+            if (!player.isLoggedIn())
+            {
+                // now, there are some "authorized" teleports.
+                // let's verify that the location of this teleport
+                // matches the initial location.
+                if(!e.getTo().equals(player.getInitialLocation()))
+                {
+                    e.setTo(player.getInitialLocation()); // we don't want an infinite loop.
+                }
+            }
         }
     }
 
@@ -105,7 +128,7 @@ public class PlayerEvents implements Listener
         }
     }
 
-    @EventHandler(priority = EventPriority.LOWEST)
+    @EventHandler(priority = EventPriority.HIGH)
     public void e(PlayerInteractEvent e)
     {
         if (core.getDB().secplayers.containsKey(e.getPlayer().getName()))

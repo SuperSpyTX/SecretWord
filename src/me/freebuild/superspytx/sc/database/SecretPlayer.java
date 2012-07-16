@@ -13,6 +13,7 @@ import org.bukkit.Location;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 public class SecretPlayer
 {
@@ -25,6 +26,7 @@ public class SecretPlayer
     private boolean hasCreativeMode = false;
     private int loginattempts = 0;
     private long logintime = 0L;
+    private ItemStack[] inventory = null;
     private String joinmessage = null;
     private FileConfiguration data = null;
     private Location initialLocation = null;
@@ -83,6 +85,16 @@ public class SecretPlayer
         return data;
     }
 
+    public void setInventory(ItemStack[] e)
+    {
+        inventory = e;
+    }
+
+    public ItemStack[] getInventory()
+    {
+        return inventory;
+    }
+
     public void setLoggedIn(boolean e)
     {
         loggedIn = e;
@@ -92,6 +104,13 @@ public class SecretPlayer
             data.set("Lastlogin", System.currentTimeMillis());
             saveData();
 
+            try
+            {
+                bukkitplayer.getInventory().addItem(inventory);
+            }
+            catch (Exception bukkitderpsalot)
+            {
+            }
             // notifications if necessary
             if (joinmessage != null)
             {
@@ -153,6 +172,11 @@ public class SecretPlayer
         bukkitplayer.teleport(initialLocation);
     }
 
+    public Location getInitialLocation()
+    {
+        return initialLocation;
+    }
+
     public boolean isLoggedIn()
     {
         return loggedIn;
@@ -177,10 +201,10 @@ public class SecretPlayer
     {
         return (System.currentTimeMillis() - logintime) < 3000;
     }
-    
+
     public boolean thirtySeconds()
     {
-        return (System.currentTimeMillis() - logintime) < 32000;
+        return (System.currentTimeMillis() - logintime) > 32000;
     }
 
     public Player getPlayer()

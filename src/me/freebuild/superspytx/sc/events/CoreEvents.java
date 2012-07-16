@@ -14,8 +14,10 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerChatEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerLoginEvent.Result;
+import org.bukkit.event.player.PlayerQuitEvent;
 
 public class CoreEvents implements Listener
 {
@@ -38,9 +40,10 @@ public class CoreEvents implements Listener
             pl.sendMessage(Configuration.prefix + ChatColor.DARK_RED + "Somebody tried to login to this server on your account!" + (Bukkit.getOnlineMode() ? " Please go change your minecraft password ASAP!" : ""));
             e.disallow(Result.KICK_OTHER, "You are already logged ingame (maybe wait a minute?)");
             Configuration.log("Player kicked because he's already logged in.");
+            core.getDB().failedlogins++;
             return;
         }
-        
+
         // now register the player instance.
         SecretPlayer player = new SecretPlayer(core, e.getPlayer().getName(), e.getAddress().toString().split(":")[0].replace("/", ""));
         core.getDB().secplayers.put(player.getName(), player);
@@ -65,13 +68,13 @@ public class CoreEvents implements Listener
             player.setLoggedIn(core.getDB().ipMatches(player.getIP(), player.getName()));
             Configuration.log("IP match? " + Boolean.toString(player.isLoggedIn()));
         }
-        
+
         // then check if they have to relogin due to half hour stuff.
         if (Permissions.HALFHOUR.check(e.getPlayer()))
         {
             Configuration.log("Checking Halfhour..");
             player.setLoggedIn(core.getDB().halfHourCheck(player.getName()));
-            Configuration.log("Been half an hour? " + Boolean.toString(player.isLoggedIn()));
+            Configuration.log("Been less than half hour? " + Boolean.toString(player.isLoggedIn()));
         }
     }
 
@@ -120,6 +123,7 @@ public class CoreEvents implements Listener
                     if (player.triggerAttempt())
                     {
                         core.getDB().secplayers.remove(player.getName());
+                        core.getDB().failedlogins++;
                     }
 
                     event.setCancelled(true);
@@ -147,9 +151,13 @@ public class CoreEvents implements Listener
                     player.setJoinMessage(e.getJoinMessage());
                     e.setJoinMessage(null);
                 }
-                
+
                 // check creative mode/strip it if necessary.
                 player.setHasCreative(e.getPlayer().getGameMode() == GameMode.CREATIVE);
+
+                // clear inventory
+                player.setInventory(e.getPlayer().getInventory().getContents());
+                e.getPlayer().getInventory().clear();
 
                 // now lets check if registered or just stupid.
                 if (!player.isRegistered())
@@ -162,6 +170,53 @@ public class CoreEvents implements Listener
                 }
             }
         }
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void unregister(PlayerQuitEvent e)
+    {
+        SecretPlayer player = core.getDB().secplayers.get(e.getPlayer().getName());
+
+        if (player != null)
+        {
+            if (!player.isLoggedIn())
+            {
+                try
+                {
+                    e.getPlayer().getInventory().addItem(player.getInventory());
+                }
+                catch (Exception bukkitderpsalot)
+                {
+                }
+            }
+        }
+
+        core.getDB().secplayers.remove(e.getPlayer().getName());
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void unregister(PlayerKickEvent e)
+    {
+        if (e.isCancelled())
+            return;
+
+        SecretPlayer player = core.getDB().secplayers.get(e.getPlayer().getName());
+
+        if (player != null)
+        {
+            if (!player.isLoggedIn())
+            {
+                try
+                {
+                    e.getPlayer().getInventory().addItem(player.getInventory());
+                }
+                catch (Exception bukkitderpsalot)
+                {
+                }
+            }
+        }
+
+        core.getDB().secplayers.remove(e.getPlayer().getName());
     }
 
 }

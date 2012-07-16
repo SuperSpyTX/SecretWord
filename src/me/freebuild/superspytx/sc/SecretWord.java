@@ -1,8 +1,10 @@
 package me.freebuild.superspytx.sc;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.logging.Level;
 
+import me.freebuild.superspytx.sc.Metrics.Graph;
 import me.freebuild.superspytx.sc.database.DatabaseCore;
 import me.freebuild.superspytx.sc.database.SecretPlayer;
 import me.freebuild.superspytx.sc.events.CoreEvents;
@@ -56,15 +58,40 @@ public class SecretWord extends JavaPlugin
                     SecretPlayer player = dbcore.secplayers.get(pl.getName());
                     if (player != null)
                     {
-                        if (!player.isLoggedIn() && player.isRegistered() && player.thirtySeconds())
+                        if (!player.isLoggedIn() && player.isRegistered() && !player.thirtySeconds())
                         {
                             pl.kickPlayer("You've taken too long to login.");
-                            dbcore.secplayers.remove(pl.getName());
                         }
                     }
                 }
             }
         }, 600L, 600L);
+        try
+        {
+            Metrics metrics = new Metrics(this);
+
+            Graph graph = metrics.createGraph("SecretWord Data");
+
+            graph.addPlotter(new Metrics.Plotter("Blocked MITM Attacks")
+            {
+
+                @Override
+                public int getValue()
+                {
+                    return dbcore.failedlogins;
+                }
+
+            });
+
+            metrics.start();
+
+            // report version to ingame.
+
+        }
+        catch (IOException e)
+        {
+            System.out.println("Metrics haz failed.");
+        }
 
         getLogger().log(Level.INFO, "SecretWord " + Configuration.version + " has been enabled! Please check for updates quite often for latest bug fixes!");
     }

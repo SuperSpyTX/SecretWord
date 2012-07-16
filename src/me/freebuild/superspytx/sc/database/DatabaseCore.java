@@ -15,6 +15,7 @@ public class DatabaseCore
 
     public SecretWord core = null;
     public Map<String, SecretPlayer> secplayers = new HashMap<String, SecretPlayer>();
+    public int failedlogins = 0;
 
     public DatabaseCore(SecretWord instance)
     {
