@@ -43,7 +43,7 @@ public class SecretWord extends JavaPlugin
         getServer().getPluginManager().registerEvents(plisten, this);
         getServer().getPluginManager().registerEvents(elisten, this);
         Configuration.version = "v" + getDescription().getVersion();
-        getServer().getScheduler().scheduleAsyncRepeatingTask(this, new Runnable()
+        getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable()
         {
             public void run()
             {
