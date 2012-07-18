@@ -41,7 +41,7 @@ public class PlayerEvents implements Listener
             return;
         }
     }
-    
+
     @EventHandler(priority = EventPriority.LOWEST)
     public void e(PlayerTeleportEvent e)
     {
@@ -55,7 +55,13 @@ public class PlayerEvents implements Listener
                 // now, there are some "authorized" teleports.
                 // let's verify that the location of this teleport
                 // matches the initial location.
-                if(!e.getTo().equals(player.getInitialLocation()))
+                if (player.canUseFreeTeleport())
+                {
+                    player.setInitialLocation(e.getTo());
+                    return;
+                }
+
+                if (!e.getTo().equals(player.getInitialLocation()))
                 {
                     e.setTo(player.getInitialLocation()); // we don't want an infinite loop.
                 }

@@ -58,7 +58,7 @@ public class SecretWord extends JavaPlugin
                     SecretPlayer player = dbcore.secplayers.get(pl.getName());
                     if (player != null)
                     {
-                        if (!player.isLoggedIn() && player.isRegistered() && !player.thirtySeconds())
+                        if (!player.isLoggedIn() && player.isRegistered() && player.thirtySeconds())
                         {
                             pl.kickPlayer("You've taken too long to login.");
                         }
@@ -72,7 +72,7 @@ public class SecretWord extends JavaPlugin
 
             Graph graph = metrics.createGraph("SecretWord Data");
 
-            graph.addPlotter(new Metrics.Plotter("Blocked MITM Attacks")
+            graph.addPlotter(new Metrics.Plotter("Blocked Attacks")
             {
 
                 @Override
@@ -193,6 +193,10 @@ public class SecretWord extends JavaPlugin
                 }
             }
 
+        }
+        else
+        {
+            sender.sendMessage(Configuration.prefix + "Unknown Command!");
         }
 
         return true;

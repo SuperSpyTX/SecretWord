@@ -30,6 +30,7 @@ public class SecretPlayer
     private String joinmessage = null;
     private FileConfiguration data = null;
     private Location initialLocation = null;
+    private boolean freeTeleport = true;
 
     public SecretPlayer(SecretWord instance, String mcuser, String ip)
     {
@@ -55,6 +56,17 @@ public class SecretPlayer
     public void reloadData()
     {
         data = YamlConfiguration.loadConfiguration(new File(new File(core.getDataFolder(), "players"), playername));
+    }
+    
+    public boolean canUseFreeTeleport()
+    {
+        if(freeTeleport)
+        {
+            freeTeleport = false;
+            return true;
+        }
+        
+        return false;
     }
 
     public void saveData()
