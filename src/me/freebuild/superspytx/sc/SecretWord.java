@@ -31,11 +31,6 @@ public class SecretWord extends JavaPlugin
     private EntityEvents elisten = null;
     public static SecretWord instance = null;
 
-    public void onDisable()
-    {
-        // lol.
-    }
-
     public void onEnable()
     {
         instance = this;
@@ -47,8 +42,7 @@ public class SecretWord extends JavaPlugin
         getServer().getPluginManager().registerEvents(clisten, this);
         getServer().getPluginManager().registerEvents(plisten, this);
         getServer().getPluginManager().registerEvents(elisten, this);
-        PluginDescriptionFile pdfFile = getDescription();
-        Configuration.version = "v" + pdfFile.getVersion();
+        Configuration.version = "v" + getDescription().getVersion();
         getServer().getScheduler().scheduleAsyncRepeatingTask(this, new Runnable()
         {
             public void run()
