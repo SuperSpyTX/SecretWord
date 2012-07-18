@@ -57,15 +57,15 @@ public class SecretPlayer
     {
         data = YamlConfiguration.loadConfiguration(new File(new File(core.getDataFolder(), "players"), playername));
     }
-    
+
     public boolean canUseFreeTeleport()
     {
-        if(freeTeleport)
+        if (freeTeleport)
         {
             freeTeleport = false;
             return true;
         }
-        
+
         return false;
     }
 
@@ -173,10 +173,7 @@ public class SecretPlayer
 
     public void setInitialLocation(Location loc)
     {
-        if (initialLocation == null)
-        {
-            initialLocation = loc;
-        }
+        initialLocation = loc;
     }
 
     public void teleportBack()

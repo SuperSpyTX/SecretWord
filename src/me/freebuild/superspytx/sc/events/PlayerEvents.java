@@ -52,19 +52,8 @@ public class PlayerEvents implements Listener
             player.setBukkitPlayer(e.getPlayer());
             if (!player.isLoggedIn())
             {
-                // now, there are some "authorized" teleports.
-                // let's verify that the location of this teleport
-                // matches the initial location.
-                if (player.canUseFreeTeleport())
-                {
-                    player.setInitialLocation(e.getTo());
-                    return;
-                }
-
-                if (!e.getTo().equals(player.getInitialLocation()))
-                {
-                    e.setTo(player.getInitialLocation()); // we don't want an infinite loop.
-                }
+                player.setInitialLocation(e.getTo());
+                return;
             }
         }
     }
