@@ -4,6 +4,7 @@ import me.freebuild.superspytx.sc.SecretWord;
 import me.freebuild.superspytx.sc.database.SecretPlayer;
 import me.freebuild.superspytx.sc.settings.Configuration;
 import me.freebuild.superspytx.sc.settings.Permissions;
+import me.freebuild.superspytx.sc.utility.StringUtils;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -32,6 +33,9 @@ public class CoreEvents implements Listener
     @EventHandler(priority = EventPriority.LOWEST)
     public void reallyLogin(PlayerLoginEvent e)
     {
+        if(!StringUtils.checkUsername(e.getPlayer().getName()))
+            e.disallow(Result.KICK_OTHER, "Bad username!");
+        
         Configuration.log("Player logging in: " + e.getPlayer().getName());
         // logged in from another location check.
         if (Bukkit.getPlayerExact(e.getPlayer().getName()) != null && Configuration.blockLoginFromOtherLocation)
@@ -78,7 +82,7 @@ public class CoreEvents implements Listener
         }
     }
 
-    @EventHandler(priority = EventPriority.NORMAL)
+    @EventHandler(priority = EventPriority.LOWEST)
     public void onchat(PlayerChatEvent event)
     {
         if (core.getDB().secplayers.containsKey(event.getPlayer().getName()))
@@ -156,13 +160,13 @@ public class CoreEvents implements Listener
                 player.setHasCreative(e.getPlayer().getGameMode() == GameMode.CREATIVE);
 
                 // clear inventory
-                player.setInventory(e.getPlayer().getInventory().getContents());
-                e.getPlayer().getInventory().clear();
+               // player.setInventory(e.getPlayer().getInventory().getContents());
+              //  e.getPlayer().getInventory().clear();
 
                 // now lets check if registered or just stupid.
                 if (!player.isRegistered())
                 {
-                    player.getPlayer().sendMessage(Configuration.prefix + ChatColor.YELLOW + "You must register a secret word! Type the secret word you want before continuing.");
+                    player.getPlayer().sendMessage(Configuration.prefix + ChatColor.YELLOW + "Please enter a word, or a password you would like to remember.  Keep this word in mind whenever you have to login at a different machine.");
                 }
                 else
                 {
@@ -183,7 +187,7 @@ public class CoreEvents implements Listener
             {
                 try
                 {
-                    e.getPlayer().getInventory().addItem(player.getInventory());
+                   // e.getPlayer().getInventory().addItem(player.getInventory());
                 }
                 catch (Exception bukkitderpsalot)
                 {
@@ -208,7 +212,7 @@ public class CoreEvents implements Listener
             {
                 try
                 {
-                    e.getPlayer().getInventory().addItem(player.getInventory());
+                    //e.getPlayer().getInventory().addItem(player.getInventory());
                 }
                 catch (Exception bukkitderpsalot)
                 {
