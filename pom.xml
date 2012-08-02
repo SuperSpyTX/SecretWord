@@ -7,7 +7,7 @@
   <artifactId>SecretWord</artifactId>
   <packaging>jar</packaging>
   <name>SecretWord</name>
-  <version>1.0.2</version>
+  <version>1.0.3</version>
   <description>
     Prevents your moderators and administrators from getting exploited by MITM attacks.
   </description>
@@ -66,7 +66,7 @@
   	<dependency>
   		<groupId>org.bukkit</groupId>
   		<artifactId>bukkit</artifactId>
-  		<version>1.2.5-R3.0</version>
+  		<version>1.2.5-R5.0</version>
   	</dependency>
    </dependencies>
   
