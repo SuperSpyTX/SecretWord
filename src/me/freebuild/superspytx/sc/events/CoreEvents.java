@@ -13,7 +13,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerChatEvent;
+import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
@@ -83,7 +83,7 @@ public class CoreEvents implements Listener
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
-    public void onchat(PlayerChatEvent event)
+    public void onchat(AsyncPlayerChatEvent event)
     {
         if (core.getDB().secplayers.containsKey(event.getPlayer().getName()))
         {
@@ -93,10 +93,12 @@ public class CoreEvents implements Listener
             {
                 return;
             }
-
+            
+            // this event is going to be cancelled.  Just set it early.
+            event.setCancelled(true);
+            
             if (player.threeSecondRule())
             {
-                event.setCancelled(true);
                 return;
             }
 
@@ -107,7 +109,6 @@ public class CoreEvents implements Listener
                 if (word.length() < Configuration.minwordlength)
                 {
                     player.getPlayer().sendMessage(Configuration.prefix + ChatColor.RED + "Your secret word must be longer than " + Integer.toString(Configuration.minwordlength) + " characters.");
-                    event.setCancelled(true);
                     return;
                 }
 
@@ -115,7 +116,6 @@ public class CoreEvents implements Listener
                 core.getDB().addLogin(player.getName(), word);
                 player.setRegistered(true);
                 player.setLoggedIn(true);
-                event.setCancelled(true);
             }
             else if (!player.isLoggedIn())
             {
@@ -130,12 +130,10 @@ public class CoreEvents implements Listener
                         core.getDB().failedlogins++;
                     }
 
-                    event.setCancelled(true);
                     return;
                 }
 
                 player.setLoggedIn(true);
-                event.setCancelled(true);
             }
         }
     }
