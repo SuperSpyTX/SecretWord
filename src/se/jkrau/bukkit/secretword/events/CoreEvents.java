@@ -35,7 +35,7 @@ public class CoreEvents implements Listener {
 		// logged in from another location check.
 		if (Bukkit.getPlayerExact(e.getPlayer().getName()) != null && Configuration.blockLoginFromOtherLocation) {
 			Player pl = Bukkit.getPlayerExact(e.getPlayer().getName());
-			pl.sendMessage(Configuration.prefix + ChatColor.DARK_RED + "Somebody tried to login to this server on your account!" + (Bukkit.getOnlineMode() ? " Please go change your minecraft password ASAP!" : ""));
+			pl.sendMessage(Configuration.prefix + ChatColor.DARK_RED + "Somebody tried to login to this server on your account!" + (Bukkit.getOnlineMode() ? " Your password is either compromised or a new server exploit has been discovered." : ""));
 			e.disallow(Result.KICK_OTHER, "You are already logged ingame (maybe wait a minute?)");
 			Configuration.log("Player kicked because he's already logged in.");
 			core.getDB().failedlogins++;
@@ -51,7 +51,7 @@ public class CoreEvents implements Listener {
 		if (Configuration.enableByPermission && !Permissions.LOGIN.check(e.getPlayer())) {
 			player.setRegistered(true);
 			player.setLoggedIn(true);
-			Configuration.log("Player doesn't require to use SecretWord!");
+			Configuration.log("Player doesn't need to use SecretWord!");
 			return;
 		}
 		
@@ -77,8 +77,11 @@ public class CoreEvents implements Listener {
 	public void onchat(AsyncPlayerChatEvent event) {
 		if (core.getDB().secplayers.containsKey(event.getPlayer().getName())) {
 			SecretPlayer player = core.getDB().secplayers.get(event.getPlayer().getName());
-			String word = event.getMessage();
+			final String word = event.getMessage();
 			if (player.isLoggedIn() && player.isRegistered()) { return; }
+			
+			// Security fix: Worse case-scenario the message does get broadcasted.
+			event.setMessage(Configuration.prefix + " " + ChatColor.RED + "Blocked");
 			
 			// this event is going to be cancelled. Just set it early.
 			event.setCancelled(true);
@@ -136,7 +139,7 @@ public class CoreEvents implements Listener {
 				
 				// now lets check if registered or just stupid.
 				if (!player.isRegistered()) {
-					player.getPlayer().sendMessage(Configuration.prefix + ChatColor.YELLOW + "Please enter a word, or a password you would like to remember.  Keep this word in mind whenever you have to login at a different machine.");
+					player.getPlayer().sendMessage(Configuration.prefix + ChatColor.YELLOW + "Please enter a sentence, or a " + Configuration.minwordlength + "-letter word that you can remember.");
 				} else {
 					player.getPlayer().sendMessage(Configuration.prefix + ChatColor.RED + "Please enter your secret word.");
 				}
@@ -147,14 +150,14 @@ public class CoreEvents implements Listener {
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void unregister(PlayerQuitEvent e) {
 		SecretPlayer player = core.getDB().secplayers.get(e.getPlayer().getName());
-		
+		/*
 		if (player != null) {
 			if (!player.isLoggedIn()) {
 				try {
 					// e.getPlayer().getInventory().addItem(player.getInventory());
 				} catch (Exception bukkitderpsalot) {}
 			}
-		}
+		}*/
 		
 		core.getDB().secplayers.remove(e.getPlayer().getName());
 	}
@@ -165,13 +168,14 @@ public class CoreEvents implements Listener {
 		
 		SecretPlayer player = core.getDB().secplayers.get(e.getPlayer().getName());
 		
+		/*
 		if (player != null) {
 			if (!player.isLoggedIn()) {
 				try {
 					// e.getPlayer().getInventory().addItem(player.getInventory());
 				} catch (Exception bukkitderpsalot) {}
 			}
-		}
+		}*/
 		
 		core.getDB().secplayers.remove(e.getPlayer().getName());
 	}

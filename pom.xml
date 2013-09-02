@@ -3,11 +3,11 @@
   <modelVersion>4.0.0</modelVersion>
   
   
-  <groupId>me.freebuild.superspytx.sc</groupId>
+  <groupId>se.jkrau.bukkit.secretword</groupId>
   <artifactId>SecretWord</artifactId>
   <packaging>jar</packaging>
   <name>SecretWord</name>
-  <version>1.0.3</version>
+  <version>1.1</version>
   <description>
     Prevents your moderators and administrators from getting exploited by MITM attacks.
   </description>

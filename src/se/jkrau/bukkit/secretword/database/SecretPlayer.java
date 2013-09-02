@@ -143,7 +143,6 @@ public class SecretPlayer {
 	}
 	
 	public void teleportBack() {
-		if (!this.registered) bukkitplayer.sendMessage(Configuration.prefix + ChatColor.YELLOW + "Please enter a word, or a password you would like to remember.  Keep this word in mind whenever you have to login at a different machine.");
 		bukkitplayer.teleport(initialLocation);
 	}
 	

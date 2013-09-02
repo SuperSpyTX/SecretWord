@@ -16,14 +16,12 @@ public class StringUtils {
 		for (String e : evil)
 			if (username.contains(e)) return false;
 		
-		
 		for (String a : alpha)
 			if (username.contains(a) && !hasallowedchars) hasallowedchars = true;
 		
 		Configuration.log("So, username " + username + " was " + Boolean.toString(hasallowedchars));
 		
 		return hasallowedchars;
-		
 	}
 	
 }
