@@ -122,7 +122,7 @@ public class SecretWord extends JavaPlugin {
 				return true;
 			}
 			
-			if (arg2.equalsIgnoreCase("your")) {
+			if (arg2.length() < 3) {
 				sender.sendMessage(Configuration.prefix + ChatColor.RED + "You need a player argument like so:");
 				sender.sendMessage(Configuration.prefix + ChatColor.RED + "/sw reset [name]");
 				return true;
