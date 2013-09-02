@@ -53,7 +53,7 @@ public class CoreEvents implements Listener {
 		Configuration.log("User " + player.getName() + " is " + (player.isRegistered() ? "" : "not ") + "registered.");
 		
 		// crap, this got removed
-		if (player.isRegistered() && core.getServer().getOnlineMode() && Configuration.onlineModeBehavior) {
+		if (player.isRegistered() && (core.getServer().getOnlineMode() || Configuration.onlineModeBehavior)) {
 			Configuration.log("Checking IP match..");
 			player.setLoggedIn(core.getDB().ipMatches(player.getIP(), player.getName()));
 			Configuration.log("IP match? " + Boolean.toString(player.isLoggedIn()));

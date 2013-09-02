@@ -64,7 +64,6 @@ public class DatabaseCore {
 		long now = System.currentTimeMillis();
 		
 		return ((now - time) < 1800000);
-		
 	}
 	
 	public boolean ipMatches(String ip, String user) {
