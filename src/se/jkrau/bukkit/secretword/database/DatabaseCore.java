@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import se.jkrau.bukkit.secretword.SecretWord;
+import se.jkrau.bukkit.secretword.settings.Configuration;
 import se.jkrau.bukkit.secretword.utils.DatabaseUtils;
 
 public class DatabaseCore {
@@ -67,14 +68,23 @@ public class DatabaseCore {
 	}
 	
 	public boolean ipMatches(String ip, String user) {
-		if (!userExists(user)) { return false; }
+		if (!userExists(user)) { 
+			Configuration.log("User does not exist! - " + user);
+			return false; 
+		}
 		
 		SecretPlayer player = secplayers.get(user);
-		if (player == null) return false;
+		if (player == null) {
+			Configuration.log("Player is null! - " + user);
+			return false;
+		}
 		
 		String ipdata = player.getData().getString("IP");
 		
-		if (ipdata == null) return false;
+		if (ipdata == null) {
+			Configuration.log("IP is null! - " + user);
+			return false;
+		}
 		
 		ipdata = ipdata.substring(0, ip.lastIndexOf("."));
 		
@@ -117,7 +127,10 @@ public class DatabaseCore {
 	public boolean userExists(String user) {
 		SecretPlayer player = secplayers.get(user);
 		
-		if (player == null) return false;
+		if (player == null) {
+			Configuration.log("User (userExists) is null! - " + user);
+			return false;
+		}
 		
 		return (new File(new File(core.getDataFolder(), "players"), user).exists());
 	}

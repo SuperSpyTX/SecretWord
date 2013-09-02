@@ -50,6 +50,8 @@ public class CoreEvents implements Listener {
 		// check registered
 		player.setRegistered(core.getDB().userExists(player.getName()));
 		
+		Configuration.log("User " + player.getName() + " is " + (player.isRegistered() ? "" : "not ") + "registered.");
+		
 		// crap, this got removed
 		if (player.isRegistered() && core.getServer().getOnlineMode() && Configuration.onlineModeBehavior) {
 			Configuration.log("Checking IP match..");
@@ -154,7 +156,7 @@ public class CoreEvents implements Listener {
 	
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void unregister(PlayerQuitEvent e) {
-		SecretPlayer player = core.getDB().secplayers.get(e.getPlayer().getName());
+		//SecretPlayer player = core.getDB().secplayers.get(e.getPlayer().getName());
 		/*
 		if (player != null) {
 			if (!player.isLoggedIn()) {
@@ -171,7 +173,7 @@ public class CoreEvents implements Listener {
 	public void unregister(PlayerKickEvent e) {
 		if (e.isCancelled()) return;
 		
-		SecretPlayer player = core.getDB().secplayers.get(e.getPlayer().getName());
+		//SecretPlayer player = core.getDB().secplayers.get(e.getPlayer().getName());
 		
 		/*
 		if (player != null) {
