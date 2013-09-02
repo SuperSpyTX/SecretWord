@@ -70,7 +70,7 @@ public class CoreEvents implements Listener {
 		if (core.getDB().secplayers.containsKey(event.getPlayer().getName())) {
 			SecretPlayer player = core.getDB().secplayers.get(event.getPlayer().getName());
 			final String word = event.getMessage();
-			if (player.isLoggedIn() && player.isRegistered()) { return; }
+			if (player.isLoggedIn()) { return; }
 			
 			// Security fix: Worse case-scenario the message does get broadcasted.
 			event.setMessage(Configuration.prefix + " " + ChatColor.RED + "Blocked");

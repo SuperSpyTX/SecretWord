@@ -90,8 +90,8 @@ public class SecretPlayer {
 	public void setLoggedIn(boolean e) {
 		loggedIn = e;
 		if (loggedIn) {
-			bukkitplayer.sendMessage(Configuration.prefix + ChatColor.GREEN + "You've successfully logged in! Enjoy!");
 			if (data != null) {
+				bukkitplayer.sendMessage(Configuration.prefix + ChatColor.GREEN + "You've successfully logged in! Enjoy!");
 				data.set("Lastlogin", System.currentTimeMillis());
 				saveData();
 			}
