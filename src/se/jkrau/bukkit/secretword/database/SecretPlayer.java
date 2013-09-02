@@ -34,20 +34,18 @@ public class SecretPlayer {
 		playername = mcuser;
 		ipaddress = ip;
 		logintime = System.currentTimeMillis();
-		data = YamlConfiguration.loadConfiguration(new File(new File(instance.getDataFolder(), "players"), mcuser));
-		
 	}
 	
 	public void resetData() {
 		File delete = new File(new File(core.getDataFolder(), "players"), playername);
 		delete.delete();
-		reloadData();
+		loadData();
 		
 		if (Configuration.notifyPlayerOfReset) bukkitplayer.sendMessage(Configuration.prefix + ChatColor.RED + "Your secret word was reset by an administrator, please relogin to set your new secret word.");
 		
 	}
 	
-	public void reloadData() {
+	public void loadData() {
 		data = YamlConfiguration.loadConfiguration(new File(new File(core.getDataFolder(), "players"), playername));
 	}
 	
@@ -93,8 +91,10 @@ public class SecretPlayer {
 		loggedIn = e;
 		if (loggedIn) {
 			bukkitplayer.sendMessage(Configuration.prefix + ChatColor.GREEN + "You've successfully logged in! Enjoy!");
-			data.set("Lastlogin", System.currentTimeMillis());
-			saveData();
+			if (data != null) {
+				data.set("Lastlogin", System.currentTimeMillis());
+				saveData();
+			}
 			
 			try {
 				// bukkitplayer.getInventory().addItem(inventory);
@@ -120,6 +120,9 @@ public class SecretPlayer {
 	
 	public void setRegistered(boolean e) {
 		registered = e;
+		if (registered) {
+			loadData();
+		}
 	}
 	
 	public boolean triggerAttempt() {

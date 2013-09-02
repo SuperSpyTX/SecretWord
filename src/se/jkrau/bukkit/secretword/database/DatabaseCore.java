@@ -1,5 +1,6 @@
 package se.jkrau.bukkit.secretword.database;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
@@ -118,9 +119,7 @@ public class DatabaseCore {
 		
 		if (player == null) return false;
 		
-		if (player.getData().getString("Username") == null) return false;
-		
-		return player.getData().getString("Username").equalsIgnoreCase(user);
+		return (new File(new File(core.getDataFolder(), "players"), user).exists());
 	}
 	
 	public void closeItUp() {

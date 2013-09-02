@@ -47,26 +47,18 @@ public class CoreEvents implements Listener {
 		core.getDB().secplayers.put(player.getName(), player);
 		player.setBukkitPlayer(e.getPlayer());
 		
-		// check permissions.
-		if (Configuration.enableByPermission && !Permissions.LOGIN.check(e.getPlayer())) {
-			player.setRegistered(true);
-			player.setLoggedIn(true);
-			Configuration.log("Player doesn't need to use SecretWord!");
-			return;
-		}
-		
 		// check registered
 		player.setRegistered(core.getDB().userExists(player.getName()));
 		
 		// crap, this got removed
-		if (core.getServer().getOnlineMode() && Configuration.onlineModeBehavior) {
+		if (player.isRegistered() && core.getServer().getOnlineMode() && Configuration.onlineModeBehavior) {
 			Configuration.log("Checking IP match..");
 			player.setLoggedIn(core.getDB().ipMatches(player.getIP(), player.getName()));
 			Configuration.log("IP match? " + Boolean.toString(player.isLoggedIn()));
 		}
 		
 		// then check if they have to relogin due to half hour stuff.
-		if (Permissions.HALFHOUR.check(e.getPlayer())) {
+		if (player.isRegistered() && Permissions.HALFHOUR.check(e.getPlayer())) {
 			Configuration.log("Checking Halfhour..");
 			player.setLoggedIn(core.getDB().halfHourCheck(player.getName()));
 			Configuration.log("Been less than half hour? " + Boolean.toString(player.isLoggedIn()));
@@ -124,6 +116,16 @@ public class CoreEvents implements Listener {
 			SecretPlayer player = core.getDB().secplayers.get(e.getPlayer().getName());
 			player.setInitialLocation(e.getPlayer().getLocation());
 			if (!player.isLoggedIn()) {
+				
+				Configuration.log("Checking perms! " + Boolean.toString(Configuration.enableByPermission) + " - " + Boolean.toString(Permissions.LOGIN.check(e.getPlayer())));
+				
+				// check permissions.
+				if (Configuration.enableByPermission && !Permissions.LOGIN.check(e.getPlayer())) {
+					player.setLoggedIn(true);
+					Configuration.log("Player doesn't need to use SecretWord!");
+					return;
+				}
+				
 				// nullify the join message if necessary
 				if (Configuration.hideJoinNotifications && !Permissions.SHOWJOIN.check(e.getPlayer())) {
 					player.setJoinMessage(e.getJoinMessage());
@@ -139,8 +141,11 @@ public class CoreEvents implements Listener {
 				
 				// now lets check if registered or just stupid.
 				if (!player.isRegistered()) {
+					player.loadData();
+					Configuration.log("User " + player.getName() + " will need to register.");
 					player.getPlayer().sendMessage(Configuration.prefix + ChatColor.YELLOW + "Please enter a sentence, or a " + Configuration.minwordlength + "-letter word that you can remember.");
 				} else {
+					Configuration.log("User " + player.getName() + " will need to login.");
 					player.getPlayer().sendMessage(Configuration.prefix + ChatColor.RED + "Please enter your secret word.");
 				}
 			}
