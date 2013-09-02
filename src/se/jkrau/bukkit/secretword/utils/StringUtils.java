@@ -11,7 +11,10 @@ public class StringUtils {
 		username = username.toLowerCase();
 		boolean hasallowedchars = false;
 		
-		// first, check for spaced chars.
+		// first, check if it's empty.
+		if (username.trim().length() == 0) {
+			return false;
+		}
 		
 		for (String e : evil)
 			if (username.contains(e)) return false;
